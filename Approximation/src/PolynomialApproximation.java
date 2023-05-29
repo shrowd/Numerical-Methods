@@ -1,5 +1,6 @@
-public class PolynomialApproximation {
+import java.lang.Math;
 
+public class PolynomialApproximation {
     public static double fun(double x) {
         return Math.sqrt(8 * Math.pow(x, 2) + 3);
     }
@@ -21,7 +22,7 @@ public class PolynomialApproximation {
     public static double lambda(double a, double b, int z) {
 
         double result = 0;
-        int n = 50;
+        int n = 100;
         double h = (b - a) / n;
 
         for (int i = 0; i < n; i++) {
@@ -42,7 +43,7 @@ public class PolynomialApproximation {
 
     public static double C(double a, double b, int z) {
         double result = 0;
-        int n = 50;
+        int n = 100;
         double h = (b - a) / n;
 
         for (int i = 0; i < n; i++) {
@@ -67,6 +68,6 @@ public class PolynomialApproximation {
     }
 
     public static void main(String[] args) {
-        System.out.println(compute(-1, 1, 4, 0.25));
+        System.out.println("Ortogonalne: " + compute(-1, 1, 5, 0.25));
     }
 }

@@ -1,50 +1,6 @@
 import java.lang.Math;
 
 public class LeastSquaresApproximation {
-    public static double fun(double x) {
-        return Math.sqrt(8 * Math.pow(x, 2) + 3);
-    }
-
-    public static double integralFun(double x, int... args) {
-
-        double result = 1;
-
-        if (args.length == 1) {
-            result = Math.pow(x, args[0]) * fun(x);
-        } else if (args.length == 2) {
-            result = Math.pow(x, args[0]) * Math.pow(x, args[1]) * 1;
-        }
-
-        return result;
-    }
-
-    public static double integrate(double a, double b, int... args) {
-
-        double result = 0;
-        int n = 50;
-        double h = (b - a) / n;
-
-        if (args.length == 1) {
-            for (int i = 0; i < n; i++) {
-
-                double fa = a + h * i;
-                double fb = a + h * (i + 1);
-
-                result += (integralFun(fa, args[0]) + integralFun(fb, args[0])) / 2 * h;
-            }
-        } else if (args.length == 2) {
-            for (int i = 0; i < n; i++) {
-
-                double fa = a + h * i;
-                double fb = a + h * (i + 1);
-
-                result += (integralFun(fa, args[0], args[1]) + integralFun(fb, args[0], args[1])) / 2 * h;
-            }
-        }
-
-        return result;
-    }
-
     public static double[] Gauss(double[][] A, double[] B) {
         int n = A.length;
 
@@ -85,29 +41,55 @@ public class LeastSquaresApproximation {
         return x;
     }
 
-    public static double compute(double a, double b, int n, double x) {
+    public static double fun(double x) {
+        return Math.sqrt(8 * Math.pow(x, 2) + 3);
+    }
 
-        double[][] A = new double[n + 1][n + 1];
-        double[] B = new double[n + 1];
+    public static double sumS(double[] tabX, int k) {
+        double result = 0;
+        for (double i : tabX) {
+            result += Math.pow(i, k);
+        }
+        return result;
+    }
 
-        for (int i = 0; i <= n; i++) {
-            B[i] = integrate(a, b, i);
-            for (int j = 0; j <= n; j++) {
-                A[i][j] = integrate(a, b, i, j);
+    public static double sumT(double[] tabX, double[] tabY, int k) {
+        double result = 0;
+        for (int i = 0; i < tabX.length; i++) {
+            result += Math.pow(tabX[i], k) * tabY[i];
+        }
+        return result;
+    }
+
+    public static double compute(double[] tabX, int m, double x) {
+
+        double[][] A = new double[m + 1][m + 1];
+        double[] B = new double[m + 1];
+
+        double[] tabY = new double[tabX.length];
+        for (int i = 0; i < tabX.length; i++) {
+            tabY[i] = fun(tabX[i]);
+        }
+
+        for (int i = 0; i <= m; i++) {
+            B[i] = sumT(tabX, tabY, i);
+            for (int j = 0; j <= m; j++) {
+                A[i][j] = sumS(tabX, i + j);
             }
         }
 
         double[] temp = Gauss(A, B);
         double result = 0;
 
-        for (int i = 0; i < temp.length; i++) {
-            result += temp[i] * Math.pow(x, i);
+        for (int i = 0; i <= m; i++) {
+            result += Math.pow(x, i) * temp[i];
         }
 
         return result;
     }
 
     public static void main(String[] args) {
-        System.out.println(compute(-1, 1, 4, 0.25));
+        double[] tabX = new double[]{-1, -0.5, 0, 0.5, 1};
+        System.out.println("Najmniejsze kwadraty: " + compute(tabX, 5, 0.25));
     }
 }
